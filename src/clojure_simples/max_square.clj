@@ -1,5 +1,6 @@
 (ns clojure-simples.max-square
-  "https://leetcode.com/problems/maximal-square/"
+  "https://leetcode.com/problems/maximal-square/
+   Overcomplicated solution"
   (:require [clojure.test :refer [is]]))
 
 (defn get-border-nums
@@ -43,10 +44,10 @@
 
         x-nums (->> (get matrix x-border)
                     (take to-take)
-                    (drop start-x)
+                    (drop start-y)
                     set)
-        y-nums (for [y (range start-y (+ start-y to-take))]
-                 (get (get matrix y) y-border))]
+        y-nums (for [x (range start-x (+ start-x to-take))]
+                 (get (get matrix x) y-border))]
     (into x-nums y-nums)))
 
 (defn get-size
@@ -77,15 +78,20 @@
                                         start-x
                                         start-y
                                         (dec size))]
-       (print border-nums)
        (if (= #{1} border-nums)
          size
          (reduced (dec size)))))
    1
-   (range 1 (count matrix))))
+   (range 1 (inc (count matrix)))))
 
-(comment
-  (get-size [[0 1 1]
-             [1 1 1]
-             [1 1 1]]
-            1 0))
+(defn get-max-ones
+  [matrix]
+  (reduce
+   (fn [max-size [x y]]
+     (let [cur-size (get-size matrix x y)]
+       (max max-size cur-size)))
+   0
+   (for [x (range (count matrix))
+         y (range (count (get matrix 0)))]
+     [x y])))
+
